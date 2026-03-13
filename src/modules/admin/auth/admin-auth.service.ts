@@ -36,8 +36,6 @@ export class AdminAuthService implements OnModuleInit {
       throw new UnauthorizedException('Admin account is deactivated');
     }
 
-    await this.adminRepo.update(admin.id, { last_login: new Date() });
-
     const payload = {
       sub: admin.id,
       role: Role.ADMIN,
@@ -45,13 +43,11 @@ export class AdminAuthService implements OnModuleInit {
       admin_role: admin.admin_role,
     };
 
-    const access_token = this.jwtService.sign(payload, {
-      secret: this.configService.get('ADMIN_JWT_SECRET'),
-      expiresIn: this.configService.get('ADMIN_JWT_EXPIRES_IN') ?? '8h',
-    });
+    const tokens = await this.generateTokens(payload);
+    await this.adminRepo.update(admin.id, { last_login: new Date() });
 
     return {
-      access_token,
+      ...tokens,
       admin: {
         id: admin.id,
         email: admin.email,
@@ -59,6 +55,44 @@ export class AdminAuthService implements OnModuleInit {
         admin_role: admin.admin_role,
       },
     };
+  }
+
+  async generateTokens(payload: any) {
+    const access_token = this.jwtService.sign(payload, {
+      secret: this.configService.get('ADMIN_JWT_SECRET'),
+      expiresIn: this.configService.get('ADMIN_JWT_EXPIRES_IN') ?? '15m',
+    });
+
+    const refresh_token = this.jwtService.sign(payload, {
+      secret: this.configService.get('ADMIN_REFRESH_JWT_SECRET') ?? this.configService.get('ADMIN_JWT_SECRET'),
+      expiresIn: this.configService.get('ADMIN_REFRESH_JWT_EXPIRES_IN') ?? '7d',
+    });
+
+    return { access_token, refresh_token };
+  }
+
+  async refreshTokens(refreshToken: string) {
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get('ADMIN_REFRESH_JWT_SECRET') ?? this.configService.get('ADMIN_JWT_SECRET'),
+      });
+
+      const admin = await this.adminRepo.findOne({ where: { id: payload.sub } });
+      if (!admin || !admin.is_active) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+
+      const newPayload = {
+        sub: admin.id,
+        role: Role.ADMIN,
+        email: admin.email,
+        admin_role: admin.admin_role,
+      };
+
+      return this.generateTokens(newPayload);
+    } catch (e) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
   }
 
   async onModuleInit() {
