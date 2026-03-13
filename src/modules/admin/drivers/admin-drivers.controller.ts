@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -32,33 +32,11 @@ export class AdminDriversController {
     return this.adminDriversService.listDrivers(query);
   }
 
-  @Post('approve/:id')
-  @ApiOperation({ summary: 'Approve driver registration' })
-  approveDriver(@Param('id') id: string) {
-    return this.adminDriversService.approveDriver(id);
-  }
-
-  @Post('reject/:id')
-  @ApiOperation({ summary: 'Reject driver application' })
-  rejectDriver(@Param('id') id: string) {
-    return this.adminDriversService.rejectDriver(id);
-  }
-
-  @Post('suspend/:id')
-  @ApiOperation({ summary: 'Suspend driver' })
-  suspendDriver(@Param('id') id: string) {
-    return this.adminDriversService.suspendDriver(id);
-  }
-
-  @Post('block/:id')
-  @ApiOperation({ summary: 'Block driver permanently' })
-  blockDriver(@Param('id') id: string) {
-    return this.adminDriversService.blockDriver(id);
-  }
-
-  @Post('unblock/:id')
-  @ApiOperation({ summary: 'Unblock driver' })
-  unblockDriver(@Param('id') id: string) {
-    return this.adminDriversService.unblockDriver(id);
+  @Get(':id')
+  @ApiOperation({ summary: 'Full driver detail with documents' })
+  @ApiResponse({ status: 200, description: 'Driver detail with documents and bank accounts' })
+  @ApiResponse({ status: 404, description: 'Driver not found' })
+  getDriverById(@Param('id') id: string) {
+    return this.adminDriversService.getDriverById(id);
   }
 }

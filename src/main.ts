@@ -66,14 +66,27 @@ Include \`Authorization: Bearer <access_token>\` on all protected routes.
       'access-token',
     )
     // Auth modules — order defines Swagger UI display order
-    .addTag('User — Auth', 'Customer app: OTP-based authentication (send-otp, verify-otp, refresh, logout)')
-    .addTag('Driver — Auth', 'Driver app: OTP-based authentication (send-otp, verify-otp, refresh, logout)')
+    .addTag(
+      'User — Auth',
+      'Customer app: OTP-based authentication (send-otp, verify-otp, refresh, logout)',
+    )
+    .addTag(
+      'Driver — Auth',
+      'Driver app: OTP-based authentication (send-otp, verify-otp, refresh, logout)',
+    )
     .addTag('Admin — Auth', 'Admin portal: Email + password authentication')
     // Admin modules
     .addTag('Admin — Dashboard', 'Dashboard metrics and system overview')
     .addTag('Admin — User Management', 'User blocking and management')
-    .addTag('Admin — Driver Management', 'Driver approval, suspension, blocking')
+    .addTag(
+      'Admin — Driver Management',
+      'Driver approval, suspension, blocking',
+    )
     .addTag('Admin — Bookings', 'Booking list and management')
+    .addTag(
+      'Admin — Ambulance Management',
+      'Ambulance approval, suspension, restore',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

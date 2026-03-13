@@ -6,6 +6,7 @@ import { AdminDashboardModule } from './dashboard/admin-dashboard.module';
 import { AdminUsersModule } from './users/admin-users.module';
 import { AdminDriversModule } from './drivers/admin-drivers.module';
 import { AdminBookingsModule } from './bookings/admin-bookings.module';
+import { AdminAmbulancesModule } from './ambulances/admin-ambulances.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AdminBookingsModule } from './bookings/admin-bookings.module';
     AdminUsersModule,
     AdminDriversModule,
     AdminBookingsModule,
+    AdminAmbulancesModule,
   ],
 })
 export class AdminModule {}
