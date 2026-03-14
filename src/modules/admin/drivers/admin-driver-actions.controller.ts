@@ -12,6 +12,7 @@ import { Roles } from '../../../common/decorators/roles.decorator';
 import { Role } from '../../../common/enums/role.enum';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { DriverIdDto, RejectDriverDto } from './dto/driver-action.dto';
+import { VerifyDocumentDto } from './dto/verify-document.dto';
 
 export interface AdminRequestUser {
   sub: string;
@@ -83,5 +84,20 @@ export class AdminDriverActionsController {
     @CurrentUser() user: AdminRequestUser,
   ) {
     return this.adminDriversService.unblockDriver(dto.driver_id, user.sub);
+  }
+
+  @Post('driver-document/verify')
+  @ApiOperation({ summary: 'Verify or reject a driver document' })
+  @ApiResponse({ status: 200, description: 'Document verified or rejected' })
+  @ApiResponse({ status: 404, description: 'Document not found' })
+  verifyDocument(
+    @Body() dto: VerifyDocumentDto,
+    @CurrentUser() user: AdminRequestUser,
+  ) {
+    return this.adminDriversService.verifyDocument(
+      dto.document_id,
+      dto.status,
+      user.sub,
+    );
   }
 }

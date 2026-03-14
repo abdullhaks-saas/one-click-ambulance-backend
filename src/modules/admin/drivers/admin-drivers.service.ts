@@ -8,7 +8,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Driver } from '../../../database/entities/driver.entity';
 import { DriverStatus } from '../../../database/entities/driver.entity';
-import { DriverDocument } from '../../../database/entities/driver-document.entity';
+import {
+  DriverDocument,
+  VerificationStatus,
+} from '../../../database/entities/driver-document.entity';
 import { DriverBankAccount } from '../../../database/entities/driver-bank-account.entity';
 import { AuditLog } from '../../../database/entities/audit-log.entity';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
@@ -20,6 +23,7 @@ export interface DriverDetailResponse {
   mobile_number: string;
   name: string | null;
   email: string | null;
+  profile_photo: string | null;
   status: DriverStatus;
   rating: number;
   total_rides: number;
@@ -105,6 +109,7 @@ export class AdminDriversService {
       mobile_number: driver.mobile_number,
       name: driver.name,
       email: driver.email,
+      profile_photo: driver.profile_photo ?? null,
       status: driver.status,
       rating: Number(driver.rating),
       total_rides: driver.total_rides,
@@ -316,5 +321,46 @@ export class AdminDriversService {
     );
 
     return { message: 'Driver unblocked' };
+  }
+
+  async verifyDocument(
+    documentId: string,
+    status: VerificationStatus,
+    adminId: string,
+  ): Promise<{ message: string }> {
+    if (status === VerificationStatus.PENDING) {
+      throw new BadRequestException(
+        'Cannot set document status to pending. Use verified or rejected.',
+      );
+    }
+
+    const doc = await this.driverDocumentRepo.findOne({
+      where: { id: documentId },
+      relations: ['driver'],
+    });
+    if (!doc) {
+      throw new NotFoundException('Document not found');
+    }
+
+    await this.driverDocumentRepo.update(documentId, {
+      verification_status: status,
+    });
+
+    await this.createAuditLog(
+      adminId,
+      status === VerificationStatus.VERIFIED
+        ? 'VERIFY_DRIVER_DOCUMENT'
+        : 'REJECT_DRIVER_DOCUMENT',
+      'driver_documents',
+      documentId,
+      { driver_id: doc.driver_id, document_type: doc.document_type },
+    );
+
+    return {
+      message:
+        status === VerificationStatus.VERIFIED
+          ? 'Document verified'
+          : 'Document rejected',
+    };
   }
 }

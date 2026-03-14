@@ -29,6 +29,9 @@ export class Driver {
   @Column({ nullable: true })
   email: string;
 
+  @Column({ nullable: true })
+  profile_photo: string;
+
   @Column({ type: 'enum', enum: DriverStatus, default: DriverStatus.PENDING })
   status: DriverStatus;
 
