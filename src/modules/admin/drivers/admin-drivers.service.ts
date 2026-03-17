@@ -17,6 +17,7 @@ import { AuditLog } from '../../../database/entities/audit-log.entity';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
 import { FCM_NOTIFICATION_SERVICE } from '../../../shared/notifications/interfaces/fcm-notification.interface';
 import { FcmNoopService } from '../../../shared/notifications/fcm-noop.service';
+import { S3Service } from '../../../shared/s3/s3.service';
 
 export interface DriverDetailResponse {
   id: string;
@@ -70,6 +71,7 @@ export class AdminDriversService {
     private readonly auditLogRepo: Repository<AuditLog>,
     @Inject(FCM_NOTIFICATION_SERVICE)
     private readonly fcmService: FcmNoopService,
+    private readonly s3Service: S3Service,
   ) {}
 
   async listDrivers(query: PaginationDto & { status?: DriverStatus }) {
@@ -85,8 +87,17 @@ export class AdminDriversService {
       order: { created_at: 'DESC' },
     });
 
+    const data = await Promise.all(
+      drivers.map(async (driver) => {
+        const profile_photo = driver.profile_photo
+          ? await this.s3Service.getSignedUrl(driver.profile_photo)
+          : null;
+        return { ...driver, profile_photo };
+      }),
+    );
+
     return {
-      data: drivers,
+      data,
       meta: {
         total,
         page,
@@ -104,12 +115,27 @@ export class AdminDriversService {
 
     const [documents, bankAccounts] = await this.fetchDriverDocumentsAndBankAccounts(id);
 
+    const [profile_photo, documentsWithUrls] = await Promise.all([
+      driver.profile_photo
+        ? this.s3Service.getSignedUrl(driver.profile_photo)
+        : Promise.resolve(null),
+      Promise.all(
+        documents.map(async (d) => ({
+          id: d.id,
+          document_type: d.document_type,
+          document_url: (await this.s3Service.getSignedUrl(d.document_url)) ?? d.document_url,
+          verification_status: d.verification_status,
+          created_at: d.created_at,
+        })),
+      ),
+    ]);
+
     return {
       id: driver.id,
       mobile_number: driver.mobile_number,
       name: driver.name,
       email: driver.email,
-      profile_photo: driver.profile_photo ?? null,
+      profile_photo,
       status: driver.status,
       rating: Number(driver.rating),
       total_rides: driver.total_rides,
@@ -118,13 +144,7 @@ export class AdminDriversService {
       is_blocked: driver.is_blocked,
       created_at: driver.created_at,
       updated_at: driver.updated_at,
-      documents: documents.map((d) => ({
-        id: d.id,
-        document_type: d.document_type,
-        document_url: d.document_url,
-        verification_status: d.verification_status,
-        created_at: d.created_at,
-      })),
+      documents: documentsWithUrls,
       bank_accounts: bankAccounts.map((b) => ({
         id: b.id,
         bank_name: b.bank_name,

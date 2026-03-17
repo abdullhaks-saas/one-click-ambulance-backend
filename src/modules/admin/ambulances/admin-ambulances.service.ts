@@ -10,6 +10,7 @@ import { AmbulanceStatus } from '../../../database/entities/ambulance.entity';
 import { AmbulanceEquipment } from '../../../database/entities/ambulance-equipment.entity';
 import { AuditLog } from '../../../database/entities/audit-log.entity';
 import { AmbulanceListQueryDto } from './dto/ambulance-list-query.dto';
+import { S3Service } from '../../../shared/s3/s3.service';
 
 export interface AmbulanceDetailResponse {
   id: string;
@@ -37,12 +38,13 @@ export class AdminAmbulancesService {
     private readonly equipmentRepo: Repository<AmbulanceEquipment>,
     @InjectRepository(AuditLog)
     private readonly auditLogRepo: Repository<AuditLog>,
+    private readonly s3Service: S3Service,
   ) {}
 
   async listAmbulances(
     query: AmbulanceListQueryDto,
   ): Promise<{
-    data: Ambulance[];
+    data: (Omit<Ambulance, 'photo_url'> & { photo_url: string | null })[];
     meta: { total: number; page: number; limit: number; total_pages: number };
   }> {
     const { page = 1, limit = 20, status, ambulance_type_id, driver_id } =
@@ -75,10 +77,19 @@ export class AdminAmbulancesService {
       );
     }
 
-    const [data, total] = await qb.getManyAndCount();
+    const [rows, total] = await qb.getManyAndCount();
+
+    const data = await Promise.all(
+      rows.map(async (ambulance) => {
+        const photo_url = ambulance.photo_url
+          ? await this.s3Service.getSignedUrl(ambulance.photo_url)
+          : null;
+        return { ...ambulance, photo_url };
+      }),
+    );
 
     return {
-      data,
+      data: data as Array<Omit<Ambulance, 'photo_url'> & { photo_url: string | null }>,
       meta: {
         total,
         page,
@@ -97,13 +108,17 @@ export class AdminAmbulancesService {
       throw new NotFoundException('Ambulance not found');
     }
 
+    const photo_url = ambulance.photo_url
+      ? await this.s3Service.getSignedUrl(ambulance.photo_url)
+      : null;
+
     return {
       id: ambulance.id,
       driver_id: ambulance.driver_id,
       ambulance_type_id: ambulance.ambulance_type_id,
       registration_number: ambulance.registration_number,
       vehicle_number: ambulance.vehicle_number,
-      photo_url: ambulance.photo_url,
+      photo_url,
       insurance_expiry: this.formatInsuranceExpiry(ambulance.insurance_expiry),
       status: ambulance.status,
       suspend_reason: ambulance.suspend_reason,

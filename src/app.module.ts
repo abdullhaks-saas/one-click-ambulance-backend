@@ -17,6 +17,7 @@ import { DispatchModule } from './modules/dispatch/dispatch.module';
 import { HttpModule } from './shared/http/http.module';
 import { RedisModule } from './shared/redis/redis.module';
 import { SmsModule } from './shared/sms/sms.module';
+import { S3Module } from './shared/s3/s3.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { SmsModule } from './shared/sms/sms.module';
     HttpModule,
     RedisModule,
     SmsModule,
+    S3Module,
     AuthModule,
     UserModule,
     DriverModule,

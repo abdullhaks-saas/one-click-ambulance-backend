@@ -9,6 +9,7 @@ import { User } from '../../../database/entities/user.entity';
 import { AuditLog } from '../../../database/entities/audit-log.entity';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
 import { UserListQueryDto } from './dto/user-list-query.dto';
+import { S3Service } from '../../../shared/s3/s3.service';
 
 export interface UserDetailResponse {
   id: string;
@@ -39,6 +40,7 @@ export class AdminUsersService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(AuditLog)
     private readonly auditLogRepo: Repository<AuditLog>,
+    private readonly s3Service: S3Service,
   ) {}
 
   async listUsers(query: PaginationDto & UserListQueryDto) {
@@ -67,8 +69,17 @@ export class AdminUsersService {
 
     const [users, total] = await qb.getManyAndCount();
 
+    const data = await Promise.all(
+      users.map(async (user) => {
+        const profile_photo_url = user.profile_photo_url
+          ? await this.s3Service.getSignedUrl(user.profile_photo_url)
+          : null;
+        return { ...user, profile_photo_url };
+      }),
+    );
+
     return {
-      data: users,
+      data,
       meta: {
         total,
         page,
@@ -86,12 +97,16 @@ export class AdminUsersService {
 
     const rideHistory = await this.fetchRideHistoryForUser(id);
 
+    const profile_photo_url = user.profile_photo_url
+      ? await this.s3Service.getSignedUrl(user.profile_photo_url)
+      : null;
+
     return {
       id: user.id,
       mobile_number: user.mobile_number,
       name: user.name,
       email: user.email,
-      profile_photo_url: user.profile_photo_url,
+      profile_photo_url,
       is_verified: user.is_verified,
       is_blocked: user.is_blocked,
       role: user.role,
