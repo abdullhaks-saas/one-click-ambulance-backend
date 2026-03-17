@@ -13,6 +13,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { DriverModule } from './modules/driver/driver.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { DispatchModule } from './modules/dispatch/dispatch.module';
 import { HttpModule } from './shared/http/http.module';
 import { RedisModule } from './shared/redis/redis.module';
 import { SmsModule } from './shared/sms/sms.module';
@@ -41,6 +42,7 @@ import { SmsModule } from './shared/sms/sms.module';
     UserModule,
     DriverModule,
     AdminModule,
+    DispatchModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

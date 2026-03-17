@@ -69,7 +69,6 @@ export class AdminAmbulancesService {
       qb.andWhere('a.driver_id = :driver_id', { driver_id });
     }
     if (query.search) {
-      // LIKE works for both MySQL and PostgreSQL (MySQL collation is case-insensitive)
       qb.andWhere(
         '(a.registration_number LIKE :search OR a.vehicle_number LIKE :search)',
         { search: `%${query.search}%` },
@@ -105,9 +104,7 @@ export class AdminAmbulancesService {
       registration_number: ambulance.registration_number,
       vehicle_number: ambulance.vehicle_number,
       photo_url: ambulance.photo_url,
-      insurance_expiry: ambulance.insurance_expiry
-        ? ambulance.insurance_expiry.toISOString().split('T')[0]
-        : null,
+      insurance_expiry: this.formatInsuranceExpiry(ambulance.insurance_expiry),
       status: ambulance.status,
       suspend_reason: ambulance.suspend_reason,
       created_at: ambulance.created_at,
@@ -126,6 +123,18 @@ export class AdminAmbulancesService {
         name: e.name,
       })),
     };
+  }
+
+  private formatInsuranceExpiry(
+    value: Date | string | null | undefined,
+  ): string | null {
+    if (value == null) return null;
+    if (typeof value === 'string') return value.split('T')[0];
+    try {
+      return (value as Date).toISOString().split('T')[0];
+    } catch {
+      return String(value).split('T')[0];
+    }
   }
 
   private async createAuditLog(

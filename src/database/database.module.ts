@@ -9,6 +9,18 @@ import { DriverBankAccount } from './entities/driver-bank-account.entity';
 import { AmbulanceType } from './entities/ambulance-type.entity';
 import { Ambulance } from './entities/ambulance.entity';
 import { AmbulanceEquipment } from './entities/ambulance-equipment.entity';
+import { Zone } from './entities/zone.entity';
+import { ZoneCoordinate } from './entities/zone-coordinate.entity';
+import { DriverStatusEntity } from './entities/driver-status.entity';
+import { DriverLocation } from './entities/driver-location.entity';
+import { DriverZone } from './entities/driver-zone.entity';
+import { Booking } from './entities/booking.entity';
+import { BookingStatusHistory } from './entities/booking-status-history.entity';
+import { BookingDriverAssignment } from './entities/booking-driver-assignment.entity';
+import { RideDetails } from './entities/ride-details.entity';
+import { RideStatus } from './entities/ride-status.entity';
+import { RideTracking } from './entities/ride-tracking.entity';
+import { Payment } from './entities/payment.entity';
 
 @Module({
   imports: [
@@ -22,6 +34,18 @@ import { AmbulanceEquipment } from './entities/ambulance-equipment.entity';
       AmbulanceType,
       Ambulance,
       AmbulanceEquipment,
+      Zone,
+      ZoneCoordinate,
+      DriverStatusEntity,
+      DriverLocation,
+      DriverZone,
+      Booking,
+      BookingStatusHistory,
+      BookingDriverAssignment,
+      RideDetails,
+      RideStatus,
+      RideTracking,
+      Payment,
     ]),
   ],
   exports: [TypeOrmModule],
