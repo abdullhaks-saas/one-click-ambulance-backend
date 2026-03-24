@@ -20,8 +20,15 @@ export class AdminDashboardController {
   constructor(private readonly adminDashboardService: AdminDashboardService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get dashboard metrics' })
-  @ApiResponse({ status: 200, description: 'Dashboard metrics' })
+  @ApiOperation({
+    summary:
+      'Dashboard summary (rides today, revenue today, active drivers, utilization, avg acceptance time)',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'total_rides_today, active_drivers, completed_rides, total_revenue, driver_utilization_rate, average_response_time_seconds',
+  })
   getDashboard() {
     return this.adminDashboardService.getDashboardMetrics();
   }

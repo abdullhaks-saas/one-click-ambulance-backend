@@ -13,13 +13,16 @@ import { DriverStatus as DriverStatusEnum } from '../../database/entities/driver
 import { DriverStatusEntity } from '../../database/entities/driver-status.entity';
 import { DriverLocation } from '../../database/entities/driver-location.entity';
 import { DriverZone } from '../../database/entities/driver-zone.entity';
-import { Ambulance, AmbulanceStatus } from '../../database/entities/ambulance.entity';
+import {
+  Ambulance,
+  AmbulanceStatus,
+} from '../../database/entities/ambulance.entity';
 import { AuditLog } from '../../database/entities/audit-log.entity';
 import { FCM_NOTIFICATION_SERVICE } from '../../shared/notifications/interfaces/fcm-notification.interface';
 import { FcmNoopService } from '../../shared/notifications/fcm-noop.service';
 import { Inject } from '@nestjs/common';
 
-const DISPATCH_RADIUS_KM = 10;
+const DISPATCH_RADIUS_KM = 100;
 
 function haversineDistanceKm(
   lat1: number,
@@ -196,6 +199,8 @@ export class DispatchService {
     if (driverIds.length === 0) {
       return [];
     }
+
+    console.log('driver ids', driverIds);
 
     const [drivers, locations, statuses] = await Promise.all([
       this.driverRepo

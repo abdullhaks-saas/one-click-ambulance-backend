@@ -28,4 +28,8 @@ export const validationSchema = Joi.object({
   ALLOWED_ORIGINS: Joi.string().optional(),
   THROTTLE_TTL: Joi.number().default(60),
   THROTTLE_LIMIT: Joi.number().default(100),
+  RAZORPAY_KEY_ID: Joi.string().allow('').optional(),
+  RAZORPAY_KEY_SECRET: Joi.string().allow('').optional(),
+  RAZORPAY_ID: Joi.string().allow('').optional(),
+  RAZORPAY_SECRET: Joi.string().allow('').optional(),
 });

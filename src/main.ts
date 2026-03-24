@@ -89,6 +89,15 @@ Include \`Authorization: Bearer <access_token>\` on all protected routes.
       'Admin — Ambulance Management',
       'Ambulance approval, suspension, restore',
     )
+    .addTag(
+      'Admin — Payments & Finance',
+      'Payments listing, Razorpay sync, reconciliation, revenue',
+    )
+    .addTag('Admin — Payouts', 'Driver wallet payouts and payout history')
+    .addTag(
+      'Admin — Analytics',
+      'Phase 7.2: rides, revenue, utilization, cancellations, demand',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

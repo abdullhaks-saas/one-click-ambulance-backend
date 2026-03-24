@@ -5,10 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { Booking } from './booking.entity';
 import { User } from './user.entity';
+import { PaymentTransaction } from './payment-transaction.entity';
 
 export enum PaymentMethod {
   ONLINE = 'online',
@@ -62,4 +64,7 @@ export class Payment {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => PaymentTransaction, (t) => t.payment)
+  transactions: PaymentTransaction[];
 }

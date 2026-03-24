@@ -21,6 +21,12 @@ import { RideDetails } from './entities/ride-details.entity';
 import { RideStatus } from './entities/ride-status.entity';
 import { RideTracking } from './entities/ride-tracking.entity';
 import { Payment } from './entities/payment.entity';
+import { PaymentTransaction } from './entities/payment-transaction.entity';
+import { DriverWallet } from './entities/driver-wallet.entity';
+import { WalletTransaction } from './entities/wallet-transaction.entity';
+import { Payout } from './entities/payout.entity';
+import { PayoutTransaction } from './entities/payout-transaction.entity';
+import { PricingRule } from './entities/pricing-rule.entity';
 
 @Module({
   imports: [
@@ -46,6 +52,12 @@ import { Payment } from './entities/payment.entity';
       RideStatus,
       RideTracking,
       Payment,
+      PaymentTransaction,
+      DriverWallet,
+      WalletTransaction,
+      Payout,
+      PayoutTransaction,
+      PricingRule,
     ]),
   ],
   exports: [TypeOrmModule],

@@ -8,6 +8,11 @@ import { AdminDriversModule } from './drivers/admin-drivers.module';
 import { AdminBookingsModule } from './bookings/admin-bookings.module';
 import { AdminRidesModule } from './rides/admin-rides.module';
 import { AdminAmbulancesModule } from './ambulances/admin-ambulances.module';
+import { AdminPricingModule } from './pricing/admin-pricing.module';
+import { AdminZonesModule } from './zones/admin-zones.module';
+import { AdminPaymentsModule } from './payments/admin-payments.module';
+import { AdminPayoutsModule } from './payouts/admin-payouts.module';
+import { AdminAnalyticsModule } from './analytics/admin-analytics.module';
 
 @Module({
   imports: [
@@ -29,6 +34,11 @@ import { AdminAmbulancesModule } from './ambulances/admin-ambulances.module';
     AdminBookingsModule,
     AdminRidesModule,
     AdminAmbulancesModule,
+    AdminPricingModule,
+    AdminZonesModule,
+    AdminPaymentsModule,
+    AdminPayoutsModule,
+    AdminAnalyticsModule,
   ],
 })
 export class AdminModule {}
