@@ -33,12 +33,13 @@ export class AdminPayoutProcessController {
       'Process payout: debit driver_wallet, create payout + payout_transactions (ledger)',
   })
   @ApiResponse({ status: 200 })
-  process(
-    @Body() dto: ProcessPayoutDto,
-    @Req() req: Request,
-  ) {
+  process(@Body() dto: ProcessPayoutDto, @Req() req: Request) {
     const adminId = (req.user as AdminJwtPayload).sub;
     const ipAddress = req.ip ?? req.socket?.remoteAddress;
-    return this.adminPayoutsService.processWeeklyPayouts(adminId, dto, ipAddress);
+    return this.adminPayoutsService.processWeeklyPayouts(
+      adminId,
+      dto,
+      ipAddress,
+    );
   }
 }

@@ -20,7 +20,11 @@ export interface ZoneWithCoordinates {
   city: string | null;
   created_at: Date;
   updated_at: Date;
-  coordinates: { latitude: number; longitude: number; sequence_order: number }[];
+  coordinates: {
+    latitude: number;
+    longitude: number;
+    sequence_order: number;
+  }[];
 }
 
 export interface ZoneListResponse {
@@ -105,7 +109,7 @@ export class AdminZonesService {
 
     if (search) {
       qb.andWhere(
-        '(LOWER(z.zone_name) LIKE LOWER(:search) OR LOWER(COALESCE(z.city, \'\')) LIKE LOWER(:search))',
+        "(LOWER(z.zone_name) LIKE LOWER(:search) OR LOWER(COALESCE(z.city, '')) LIKE LOWER(:search))",
         { search: `%${search}%` },
       );
     }
@@ -211,10 +215,16 @@ export class AdminZonesService {
     });
     await this.driverZoneRepo.save(driverZone);
 
-    await this.createAuditLog(adminId, 'ASSIGN_DRIVER_TO_ZONE', 'driver_zones', driverZone.id, {
-      zone_id: zoneId,
-      driver_id: driverId,
-    });
+    await this.createAuditLog(
+      adminId,
+      'ASSIGN_DRIVER_TO_ZONE',
+      'driver_zones',
+      driverZone.id,
+      {
+        zone_id: zoneId,
+        driver_id: driverId,
+      },
+    );
 
     return { message: 'Driver assigned to zone successfully' };
   }
@@ -232,10 +242,16 @@ export class AdminZonesService {
     }
 
     await this.driverZoneRepo.remove(driverZone);
-    await this.createAuditLog(adminId, 'REMOVE_DRIVER_FROM_ZONE', 'driver_zones', driverZone.id, {
-      zone_id: zoneId,
-      driver_id: driverId,
-    });
+    await this.createAuditLog(
+      adminId,
+      'REMOVE_DRIVER_FROM_ZONE',
+      'driver_zones',
+      driverZone.id,
+      {
+        zone_id: zoneId,
+        driver_id: driverId,
+      },
+    );
 
     return { message: 'Driver removed from zone successfully' };
   }
@@ -288,7 +304,9 @@ export class AdminZonesService {
     };
   }
 
-  private formatZoneWithCoordinates(zone: Zone & { coordinates?: ZoneCoordinate[] }): ZoneWithCoordinates {
+  private formatZoneWithCoordinates(
+    zone: Zone & { coordinates?: ZoneCoordinate[] },
+  ): ZoneWithCoordinates {
     return {
       id: zone.id,
       zone_name: zone.zone_name,

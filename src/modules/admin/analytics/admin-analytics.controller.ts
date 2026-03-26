@@ -1,4 +1,10 @@
-import { applyDecorators, Controller, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  applyDecorators,
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,

@@ -45,7 +45,8 @@ export class DispatchController {
   @ApiResponse({ status: 404, description: 'Booking or driver not found' })
   manualAssign(@Body() dto: ManualAssignDto, @Req() req: Request) {
     const adminId = (req.user as AdminJwtPayload).sub;
-    const ipAddress = req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
+    const ipAddress =
+      req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
     return this.dispatchService.manualAssign(
       dto.booking_id,
       dto.driver_id,
@@ -59,7 +60,8 @@ export class DispatchController {
   @ApiResponse({ status: 200, description: 'Assignment cancelled' })
   cancelAssignment(@Body() dto: CancelAssignmentDto, @Req() req: Request) {
     const adminId = (req.user as AdminJwtPayload).sub;
-    const ipAddress = req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
+    const ipAddress =
+      req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
     return this.dispatchService.cancelAssignment(
       dto.booking_id,
       adminId,
@@ -88,7 +90,8 @@ export class DispatchController {
   @ApiResponse({ status: 200, description: 'Driver assigned or not found' })
   assignDriver(@Body() dto: AssignDriverDto, @Req() req: Request) {
     const adminId = (req.user as AdminJwtPayload).sub;
-    const ipAddress = req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
+    const ipAddress =
+      req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
     return this.dispatchService.assignDriver(
       dto.booking_id,
       adminId,
@@ -101,7 +104,8 @@ export class DispatchController {
   @ApiResponse({ status: 200, description: 'New driver assigned or not found' })
   retryAssignment(@Body() dto: AssignDriverDto, @Req() req: Request) {
     const adminId = (req.user as AdminJwtPayload).sub;
-    const ipAddress = req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
+    const ipAddress =
+      req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
     return this.dispatchService.retryAssignment(
       dto.booking_id,
       adminId,
@@ -115,7 +119,8 @@ export class DispatchController {
   @ApiResponse({ status: 400, description: 'Driver already accepted' })
   driverTimeout(@Body() dto: DriverTimeoutDto, @Req() req: Request) {
     const adminId = (req.user as AdminJwtPayload).sub;
-    const ipAddress = req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
+    const ipAddress =
+      req.ip ?? (req.socket as { remoteAddress?: string })?.remoteAddress;
     return this.dispatchService.driverTimeout(
       dto.assignment_id,
       adminId,

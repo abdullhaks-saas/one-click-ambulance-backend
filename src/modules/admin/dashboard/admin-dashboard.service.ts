@@ -1,8 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, IsNull, Not, Repository } from 'typeorm';
-import { Booking, BookingStatus } from '../../../database/entities/booking.entity';
-import { Payment, PaymentStatus } from '../../../database/entities/payment.entity';
+import {
+  Booking,
+  BookingStatus,
+} from '../../../database/entities/booking.entity';
+import {
+  Payment,
+  PaymentStatus,
+} from '../../../database/entities/payment.entity';
 import { DriverStatusEntity } from '../../../database/entities/driver-status.entity';
 import { BookingDriverAssignment } from '../../../database/entities/booking-driver-assignment.entity';
 

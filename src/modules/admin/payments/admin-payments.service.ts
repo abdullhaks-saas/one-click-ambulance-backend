@@ -6,7 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Payment, PaymentStatus } from '../../../database/entities/payment.entity';
+import {
+  Payment,
+  PaymentStatus,
+} from '../../../database/entities/payment.entity';
 import {
   PaymentTransaction,
   PaymentTransactionKind,
@@ -131,14 +134,18 @@ export class AdminPaymentsService {
   }
 
   async listFailedTransactions(query: PaymentListQueryDto) {
-    const q = { ...query, status: undefined };
-    const { page = 1, limit = 20, from, to, search } = q;
+    const { page = 1, limit = 20, from, to, search, status } = query;
     const skip = (page - 1) * limit;
+
+    const st =
+      status === 'failed' || status === 'pending'
+        ? [status]
+        : (['failed', 'pending'] as const);
 
     const qb = this.paymentRepo
       .createQueryBuilder('p')
       .leftJoinAndSelect('p.user', 'u')
-      .where('p.status IN (:...st)', { st: ['failed', 'pending'] })
+      .where('p.status IN (:...st)', { st: [...st] })
       .orderBy('p.updated_at', 'DESC')
       .skip(skip)
       .take(limit);
@@ -169,7 +176,11 @@ export class AdminPaymentsService {
         created_at: p.created_at,
         updated_at: p.updated_at,
         user: p.user
-          ? { id: p.user.id, name: p.user.name, mobile_number: p.user.mobile_number }
+          ? {
+              id: p.user.id,
+              name: p.user.name,
+              mobile_number: p.user.mobile_number,
+            }
           : undefined,
       })),
       meta: {
@@ -182,7 +193,9 @@ export class AdminPaymentsService {
   }
 
   async retryFailedPayment(paymentId: string) {
-    const payment = await this.paymentRepo.findOne({ where: { id: paymentId } });
+    const payment = await this.paymentRepo.findOne({
+      where: { id: paymentId },
+    });
     if (!payment) {
       throw new NotFoundException('Payment not found');
     }
@@ -226,9 +239,7 @@ export class AdminPaymentsService {
           error_message: msg,
         }),
       );
-      throw new BadGatewayException(
-        `Razorpay request failed: ${msg}`,
-      );
+      throw new BadGatewayException(`Razorpay request failed: ${msg}`);
     }
   }
 
@@ -241,8 +252,10 @@ export class AdminPaymentsService {
       .groupBy('p.status')
       .getRawMany<{ status: string; cnt: string; total_amount: string }>();
 
-    const payments_by_status: Record<string, { count: number; amount: number }> =
-      {};
+    const payments_by_status: Record<
+      string,
+      { count: number; amount: number }
+    > = {};
     for (const r of statusRows) {
       payments_by_status[r.status] = {
         count: parseInt(r.cnt, 10),
@@ -297,7 +310,9 @@ export class AdminPaymentsService {
     }
     const payment = pt.payment;
     if (!payment.razorpay_payment_id) {
-      throw new BadRequestException('Linked payment has no razorpay_payment_id');
+      throw new BadRequestException(
+        'Linked payment has no razorpay_payment_id',
+      );
     }
 
     try {
@@ -423,8 +438,7 @@ export class AdminPaymentsService {
       gross_revenue_from_online_payments: gross,
       total_driver_commission_credited: commission,
       net_platform_estimate: Math.max(0, gross - commission),
-      note:
-        'net_platform_estimate is simplified (successful online payments minus driver commission credits in wallet ledger).',
+      note: 'net_platform_estimate is simplified (successful online payments minus driver commission credits in wallet ledger).',
     };
   }
 

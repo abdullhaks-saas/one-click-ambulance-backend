@@ -5,7 +5,10 @@ import { PaginationDto } from '../../../../common/dto/pagination.dto';
 import { BookingStatus } from '../../../../database/entities/booking.entity';
 
 export class BookingListQueryDto extends PaginationDto {
-  @ApiPropertyOptional({ enum: BookingStatus, description: 'Filter by booking status' })
+  @ApiPropertyOptional({
+    enum: BookingStatus,
+    description: 'Filter by booking status',
+  })
   @IsOptional()
   status?: BookingStatus | string;
 

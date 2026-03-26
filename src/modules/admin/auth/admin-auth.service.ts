@@ -64,7 +64,9 @@ export class AdminAuthService implements OnModuleInit {
     });
 
     const refresh_token = this.jwtService.sign(payload, {
-      secret: this.configService.get('ADMIN_REFRESH_JWT_SECRET') ?? this.configService.get('ADMIN_JWT_SECRET'),
+      secret:
+        this.configService.get('ADMIN_REFRESH_JWT_SECRET') ??
+        this.configService.get('ADMIN_JWT_SECRET'),
       expiresIn: this.configService.get('ADMIN_REFRESH_JWT_EXPIRES_IN') ?? '7d',
     });
 
@@ -74,10 +76,14 @@ export class AdminAuthService implements OnModuleInit {
   async refreshTokens(refreshToken: string) {
     try {
       const payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get('ADMIN_REFRESH_JWT_SECRET') ?? this.configService.get('ADMIN_JWT_SECRET'),
+        secret:
+          this.configService.get('ADMIN_REFRESH_JWT_SECRET') ??
+          this.configService.get('ADMIN_JWT_SECRET'),
       });
 
-      const admin = await this.adminRepo.findOne({ where: { id: payload.sub } });
+      const admin = await this.adminRepo.findOne({
+        where: { id: payload.sub },
+      });
       if (!admin || !admin.is_active) {
         throw new UnauthorizedException('Invalid refresh token');
       }

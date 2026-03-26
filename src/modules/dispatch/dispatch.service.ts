@@ -162,7 +162,9 @@ export class DispatchService {
     adminId: string,
     ipAddress?: string,
   ): Promise<{ message: string }> {
-    const booking = await this.bookingRepo.findOne({ where: { id: bookingId } });
+    const booking = await this.bookingRepo.findOne({
+      where: { id: bookingId },
+    });
     if (!booking) {
       throw new NotFoundException('Booking not found');
     }
@@ -223,9 +225,7 @@ export class DispatchService {
     const onlineDriverIds = new Set(
       statuses.map((s) => s.driver_id).filter(Boolean),
     );
-    const locationMap = new Map(
-      locations.map((l) => [l.driver_id, l]),
-    );
+    const locationMap = new Map(locations.map((l) => [l.driver_id, l]));
     const driverMap = new Map(drivers.map((d) => [d.id, d]));
 
     const ambulances = await this.ambulanceRepo.find({
@@ -270,7 +270,10 @@ export class DispatchService {
     const ambulanceTypeId = booking.ambulance_type_id;
 
     const ambulances = await this.ambulanceRepo.find({
-      where: { ambulance_type_id: ambulanceTypeId, status: AmbulanceStatus.APPROVED },
+      where: {
+        ambulance_type_id: ambulanceTypeId,
+        status: AmbulanceStatus.APPROVED,
+      },
       relations: ['driver'],
     });
     const driverIds = ambulances
@@ -289,11 +292,16 @@ export class DispatchService {
     ]);
 
     const onlineIds = new Set(
-      statuses.filter((s) => s.is_online && !s.current_booking_id).map((s) => s.driver_id),
+      statuses
+        .filter((s) => s.is_online && !s.current_booking_id)
+        .map((s) => s.driver_id),
     );
     const locationMap = new Map(locations.map((l) => [l.driver_id, l]));
     const driverMap = new Map(
-      ambulances.map((a) => [a.driver_id, a.driver]).filter(([, d]) => d) as [string, Driver][],
+      ambulances.map((a) => [a.driver_id, a.driver]).filter(([, d]) => d) as [
+        string,
+        Driver,
+      ][],
     );
 
     let nearest: FindDriverResult | null = null;

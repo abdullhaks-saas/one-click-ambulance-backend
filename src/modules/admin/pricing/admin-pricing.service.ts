@@ -123,7 +123,9 @@ export class AdminPricingService {
       Object.entries(updates).filter(([, v]) => v !== undefined),
     );
     if (Object.keys(nonUndefined).length === 0) {
-      throw new BadRequestException('At least one pricing field must be provided');
+      throw new BadRequestException(
+        'At least one pricing field must be provided',
+      );
     }
 
     let rule = await this.pricingRuleRepo.findOne({

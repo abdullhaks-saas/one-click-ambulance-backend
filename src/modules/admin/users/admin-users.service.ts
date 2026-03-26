@@ -44,7 +44,7 @@ export class AdminUsersService {
   ) {}
 
   async listUsers(query: PaginationDto & UserListQueryDto) {
-    const { page = 1, limit = 20, search, status } = query;
+    const { page = 1, limit = 20, search, status, from, to } = query;
     const skip = (page - 1) * limit;
 
     const qb = this.userRepo
@@ -65,6 +65,13 @@ export class AdminUsersService {
       qb.andWhere('user.is_blocked = :is_blocked', { is_blocked: true });
     } else if (status === 'active') {
       qb.andWhere('user.is_blocked = :is_blocked', { is_blocked: false });
+    }
+
+    if (from) {
+      qb.andWhere('DATE(user.created_at) >= :from', { from });
+    }
+    if (to) {
+      qb.andWhere('DATE(user.created_at) <= :to', { to });
     }
 
     const [users, total] = await qb.getManyAndCount();
@@ -155,10 +162,7 @@ export class AdminUsersService {
     return { message: 'User blocked successfully' };
   }
 
-  async unblockUser(
-    id: string,
-    adminId: string,
-  ): Promise<{ message: string }> {
+  async unblockUser(id: string, adminId: string): Promise<{ message: string }> {
     const user = await this.userRepo.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException('User not found');

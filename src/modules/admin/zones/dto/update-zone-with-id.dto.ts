@@ -21,7 +21,10 @@ export class UpdateZoneWithIdDto {
   @IsUUID()
   zone_id: string;
 
-  @ApiPropertyOptional({ description: 'Zone name', example: 'Central Bangalore' })
+  @ApiPropertyOptional({
+    description: 'Zone name',
+    example: 'Central Bangalore',
+  })
   @IsOptional()
   @IsString()
   zone_name?: string;
@@ -39,5 +42,9 @@ export class UpdateZoneWithIdDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CoordinateDto)
-  coordinates?: { latitude: number; longitude: number; sequence_order?: number }[];
+  coordinates?: {
+    latitude: number;
+    longitude: number;
+    sequence_order?: number;
+  }[];
 }

@@ -13,4 +13,6 @@ export interface FcmPayload {
   title: string;
   body: string;
   data?: Record<string, string>;
+  /** Rich notification image (FCM `notification.imageUrl` when using Firebase Admin). */
+  imageUrl?: string;
 }

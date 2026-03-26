@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -82,7 +75,9 @@ export class AdminPaymentsFinanceController {
   }
 
   @Get('platform-revenue')
-  @ApiOperation({ summary: 'Platform revenue estimate from payments vs commission' })
+  @ApiOperation({
+    summary: 'Platform revenue estimate from payments vs commission',
+  })
   @ApiQuery({ name: 'from', required: false })
   @ApiQuery({ name: 'to', required: false })
   @ApiResponse({ status: 200 })

@@ -10,9 +10,7 @@ import {
  * Creates pricing_rules table for Phase 4: Pricing Configuration.
  * Aligns with One Click Ambulance plan (plan.md) Phase 4.1.
  */
-export class CreatePhase4PricingRulesTables20250317120000
-  implements MigrationInterface
-{
+export class CreatePhase4PricingRulesTables20250317120000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const isMySQL =
       queryRunner.connection.options.type === 'mysql' ||

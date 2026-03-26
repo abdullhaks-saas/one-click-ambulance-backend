@@ -27,6 +27,13 @@ import { WalletTransaction } from './entities/wallet-transaction.entity';
 import { Payout } from './entities/payout.entity';
 import { PayoutTransaction } from './entities/payout-transaction.entity';
 import { PricingRule } from './entities/pricing-rule.entity';
+import { Notification } from './entities/notification.entity';
+import { NotificationLog } from './entities/notification-log.entity';
+import { SystemSetting } from './entities/system-setting.entity';
+import { ErrorLog } from './entities/error-log.entity';
+import { SupportTicket } from './entities/support-ticket.entity';
+import { TicketMessage } from './entities/ticket-message.entity';
+import { AppVersion } from './entities/app-version.entity';
 
 @Module({
   imports: [
@@ -58,6 +65,13 @@ import { PricingRule } from './entities/pricing-rule.entity';
       Payout,
       PayoutTransaction,
       PricingRule,
+      Notification,
+      NotificationLog,
+      SystemSetting,
+      ErrorLog,
+      SupportTicket,
+      TicketMessage,
+      AppVersion,
     ]),
   ],
   exports: [TypeOrmModule],

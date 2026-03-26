@@ -28,8 +28,14 @@ export class AdminUsersController {
   @ApiOperation({ summary: 'List all users (paginated)' })
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'status', required: false, enum: ['all', 'blocked', 'active'] })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ['all', 'blocked', 'active'],
+  })
   @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({ name: 'from', required: false, type: String })
+  @ApiQuery({ name: 'to', required: false, type: String })
   @ApiResponse({ status: 200, description: 'Paginated user list' })
   listUsers(@Query() query: PaginationDto & UserListQueryDto) {
     return this.adminUsersService.listUsers(query);
@@ -47,10 +53,7 @@ export class AdminUsersController {
   @ApiOperation({ summary: 'Block user account' })
   @ApiResponse({ status: 200, description: 'User blocked' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  blockUser(
-    @Param('id') id: string,
-    @CurrentUser() user: AdminRequestUser,
-  ) {
+  blockUser(@Param('id') id: string, @CurrentUser() user: AdminRequestUser) {
     return this.adminUsersService.blockUser(id, user.sub);
   }
 
@@ -58,10 +61,7 @@ export class AdminUsersController {
   @ApiOperation({ summary: 'Unblock user' })
   @ApiResponse({ status: 200, description: 'User unblocked' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  unblockUser(
-    @Param('id') id: string,
-    @CurrentUser() user: AdminRequestUser,
-  ) {
+  unblockUser(@Param('id') id: string, @CurrentUser() user: AdminRequestUser) {
     return this.adminUsersService.unblockUser(id, user.sub);
   }
 }

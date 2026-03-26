@@ -24,7 +24,10 @@ export class CoordinateDto {
 }
 
 export class UpdateZoneDto {
-  @ApiPropertyOptional({ description: 'Zone name', example: 'Central Bangalore' })
+  @ApiPropertyOptional({
+    description: 'Zone name',
+    example: 'Central Bangalore',
+  })
   @IsOptional()
   @IsString()
   zone_name?: string;

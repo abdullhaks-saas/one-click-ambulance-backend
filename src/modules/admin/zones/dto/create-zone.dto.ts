@@ -18,7 +18,10 @@ export class CoordinateDto {
   @IsNumber()
   longitude: number;
 
-  @ApiPropertyOptional({ description: 'Order of coordinate in polygon', default: 0 })
+  @ApiPropertyOptional({
+    description: 'Order of coordinate in polygon',
+    default: 0,
+  })
   @IsOptional()
   @IsNumber()
   sequence_order?: number;
@@ -41,7 +44,7 @@ export class CreateZoneDto {
     example: [
       { latitude: 12.9716, longitude: 77.5946 },
       { latitude: 12.9352, longitude: 77.6245 },
-      { latitude: 12.9060, longitude: 77.5859 },
+      { latitude: 12.906, longitude: 77.5859 },
       { latitude: 12.9716, longitude: 77.5946 },
     ],
   })

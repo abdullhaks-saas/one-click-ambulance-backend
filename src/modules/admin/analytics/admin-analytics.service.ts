@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   DataSource,
@@ -9,8 +6,14 @@ import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
-import { Booking, BookingStatus } from '../../../database/entities/booking.entity';
-import { Payment, PaymentStatus } from '../../../database/entities/payment.entity';
+import {
+  Booking,
+  BookingStatus,
+} from '../../../database/entities/booking.entity';
+import {
+  Payment,
+  PaymentStatus,
+} from '../../../database/entities/payment.entity';
 import { BookingDriverAssignment } from '../../../database/entities/booking-driver-assignment.entity';
 import {
   WalletTransaction,
@@ -263,8 +266,14 @@ export class AdminAnalyticsService {
       .select('bda.driver_id', 'driver_id')
       .addSelect('MAX(d.name)', 'driver_name')
       .addSelect('COUNT(DISTINCT b.id)', 'completed_rides')
-      .addSelect('COALESCE(SUM(rd.total_duration_min), 0)', 'total_ride_duration_min')
-      .addSelect('COALESCE(SUM(rd.total_distance_km), 0)', 'total_ride_distance_km')
+      .addSelect(
+        'COALESCE(SUM(rd.total_duration_min), 0)',
+        'total_ride_duration_min',
+      )
+      .addSelect(
+        'COALESCE(SUM(rd.total_distance_km), 0)',
+        'total_ride_distance_km',
+      )
       .groupBy('bda.driver_id');
 
     this.applyBookingFilters(qb, dto);
@@ -280,8 +289,7 @@ export class AdminAnalyticsService {
     return {
       from: r.from,
       to: r.to,
-      note:
-        'Trip duration/distance from ride_details for completed rides. Online time is not stored in driver_status history.',
+      note: 'Trip duration/distance from ride_details for completed rides. Online time is not stored in driver_status history.',
       drivers: rows.map((x) => ({
         driver_id: x.driver_id,
         driver_name: x.driver_name,
@@ -314,7 +322,8 @@ export class AdminAnalyticsService {
       .getRawOne<{ avg_sec: string }>();
 
     const days = eachYmdInclusive(r.from, r.to);
-    const by_day: { date: string; average_response_time_seconds: number }[] = [];
+    const by_day: { date: string; average_response_time_seconds: number }[] =
+      [];
     for (const dayStr of days) {
       const { start, endExclusive } = localDayBounds(dayStr);
       const row = await base
@@ -334,7 +343,9 @@ export class AdminAnalyticsService {
     return {
       from: r.from,
       to: r.to,
-      overall_average_response_time_seconds: Math.round(toNum(overall?.avg_sec)),
+      overall_average_response_time_seconds: Math.round(
+        toNum(overall?.avg_sec),
+      ),
       by_day,
     };
   }
@@ -409,7 +420,8 @@ export class AdminAnalyticsService {
       driver_name: row.driver_name,
       mobile_number: row.mobile_number,
       completed_rides: parseInt(row.completed_rides, 10),
-      commission_credited: Math.round((earnMap.get(row.driver_id) ?? 0) * 100) / 100,
+      commission_credited:
+        Math.round((earnMap.get(row.driver_id) ?? 0) * 100) / 100,
     }));
 
     for (const e of earnRows) {
@@ -478,7 +490,10 @@ export class AdminAnalyticsService {
       .groupBy(reasonExpr);
     this.applyBookingFilters(reasonQb, dto);
 
-    const reasonRows = await reasonQb.getRawMany<{ reason: string; cnt: string }>();
+    const reasonRows = await reasonQb.getRawMany<{
+      reason: string;
+      cnt: string;
+    }>();
 
     return {
       from: r.from,

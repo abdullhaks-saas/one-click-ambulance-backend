@@ -41,14 +41,17 @@ export class AdminAmbulancesService {
     private readonly s3Service: S3Service,
   ) {}
 
-  async listAmbulances(
-    query: AmbulanceListQueryDto,
-  ): Promise<{
+  async listAmbulances(query: AmbulanceListQueryDto): Promise<{
     data: (Omit<Ambulance, 'photo_url'> & { photo_url: string | null })[];
     meta: { total: number; page: number; limit: number; total_pages: number };
   }> {
-    const { page = 1, limit = 20, status, ambulance_type_id, driver_id } =
-      query;
+    const {
+      page = 1,
+      limit = 20,
+      status,
+      ambulance_type_id,
+      driver_id,
+    } = query;
     const skip = (page - 1) * limit;
 
     const qb = this.ambulanceRepo
@@ -89,7 +92,9 @@ export class AdminAmbulancesService {
     );
 
     return {
-      data: data as Array<Omit<Ambulance, 'photo_url'> & { photo_url: string | null }>,
+      data: data as Array<
+        Omit<Ambulance, 'photo_url'> & { photo_url: string | null }
+      >,
       meta: {
         total,
         page,
@@ -125,7 +130,10 @@ export class AdminAmbulancesService {
       created_at: ambulance.created_at,
       updated_at: ambulance.updated_at,
       ambulance_type: ambulance.ambulance_type
-        ? { id: ambulance.ambulance_type.id, name: ambulance.ambulance_type.name }
+        ? {
+            id: ambulance.ambulance_type.id,
+            name: ambulance.ambulance_type.name,
+          }
         : null,
       driver: ambulance.driver
         ? {
@@ -192,7 +200,12 @@ export class AdminAmbulancesService {
       status: AmbulanceStatus.APPROVED,
       suspend_reason: undefined,
     });
-    await this.createAuditLog(adminId, 'APPROVE_AMBULANCE', 'ambulances', ambulanceId);
+    await this.createAuditLog(
+      adminId,
+      'APPROVE_AMBULANCE',
+      'ambulances',
+      ambulanceId,
+    );
 
     return { message: 'Ambulance approved successfully' };
   }
@@ -237,7 +250,12 @@ export class AdminAmbulancesService {
       status: AmbulanceStatus.APPROVED,
       suspend_reason: undefined,
     });
-    await this.createAuditLog(adminId, 'RESTORE_AMBULANCE', 'ambulances', ambulanceId);
+    await this.createAuditLog(
+      adminId,
+      'RESTORE_AMBULANCE',
+      'ambulances',
+      ambulanceId,
+    );
 
     return { message: 'Ambulance restored successfully' };
   }

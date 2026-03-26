@@ -7,7 +7,8 @@ import { RideStatusEnum } from '../../../../database/entities/ride-status.entity
 export class RideListQueryDto extends PaginationDto {
   @ApiPropertyOptional({
     enum: RideStatusEnum,
-    description: 'Filter by ride status (accepted, arrived, patient_onboard, trip_started, trip_completed)',
+    description:
+      'Filter by ride status (accepted, arrived, patient_onboard, trip_started, trip_completed)',
   })
   @IsOptional()
   status?: RideStatusEnum | string;
@@ -32,4 +33,9 @@ export class RideListQueryDto extends PaginationDto {
   @IsString()
   @Type(() => String)
   search?: string;
+
+  @ApiPropertyOptional({ description: 'Filter by booking service zone' })
+  @IsOptional()
+  @IsUUID()
+  zone_id?: string;
 }

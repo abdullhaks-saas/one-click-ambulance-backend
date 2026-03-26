@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Payout, PayoutStatus } from '../../../database/entities/payout.entity';
@@ -80,9 +77,8 @@ export class AdminPayoutsService {
           ? {
               id: po.driver_bank_account.id,
               bank_name: po.driver_bank_account.bank_name,
-              account_number_last4: po.driver_bank_account.account_number?.slice(
-                -4,
-              ),
+              account_number_last4:
+                po.driver_bank_account.account_number?.slice(-4),
             }
           : undefined,
       })),
@@ -141,9 +137,8 @@ export class AdminPayoutsService {
         bank: po.driver_bank_account
           ? {
               bank_name: po.driver_bank_account.bank_name,
-              account_number_last4: po.driver_bank_account.account_number?.slice(
-                -4,
-              ),
+              account_number_last4:
+                po.driver_bank_account.account_number?.slice(-4),
             }
           : undefined,
       })),
@@ -228,8 +223,7 @@ export class AdminPayoutsService {
             step: 'ledger_completed',
             response: {
               method: 'internal_wallet_debit',
-              note:
-                'Bank transfer via Razorpay Payouts / manual settlement is out of scope for this step; wallet debited in platform ledger.',
+              note: 'Bank transfer via Razorpay Payouts / manual settlement is out of scope for this step; wallet debited in platform ledger.',
             },
           }),
         );

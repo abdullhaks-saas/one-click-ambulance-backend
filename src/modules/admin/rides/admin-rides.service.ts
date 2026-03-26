@@ -69,7 +69,16 @@ export class AdminRidesService {
   ) {}
 
   async listRides(query: RideListQueryDto): Promise<RideListResponse> {
-    const { page = 1, limit = 20, status, from, to, booking_id, search } = query;
+    const {
+      page = 1,
+      limit = 20,
+      status,
+      from,
+      to,
+      booking_id,
+      search,
+      zone_id,
+    } = query;
     const skip = (page - 1) * limit;
 
     const qb = this.rideStatusRepo
@@ -87,6 +96,9 @@ export class AdminRidesService {
     }
     if (booking_id) {
       qb.andWhere('rs.booking_id = :booking_id', { booking_id });
+    }
+    if (zone_id) {
+      qb.andWhere('b.zone_id = :zone_id', { zone_id });
     }
     if (from) {
       qb.andWhere('DATE(rs.created_at) >= :from', { from });
@@ -108,7 +120,8 @@ export class AdminRidesService {
         id: rs.id,
         booking_id: rs.booking_id,
         ride_status: rs.status,
-        total_distance_km: rd?.total_distance_km != null ? Number(rd.total_distance_km) : null,
+        total_distance_km:
+          rd?.total_distance_km != null ? Number(rd.total_distance_km) : null,
         total_duration_min: rd?.total_duration_min ?? null,
         trip_started_at: rd?.trip_started_at ?? null,
         trip_completed_at: rd?.trip_completed_at ?? null,
@@ -152,7 +165,9 @@ export class AdminRidesService {
     }
 
     const [rideDetails, rideTracking] = await Promise.all([
-      this.rideDetailsRepo.findOne({ where: { booking_id: rideStatus.booking_id } }),
+      this.rideDetailsRepo.findOne({
+        where: { booking_id: rideStatus.booking_id },
+      }),
       this.rideTrackingRepo.find({
         where: { booking_id: rideStatus.booking_id },
         order: { recorded_at: 'ASC' },
@@ -163,7 +178,9 @@ export class AdminRidesService {
       id: rideStatus.id,
       booking_id: rideStatus.booking_id,
       total_distance_km:
-        rideDetails?.total_distance_km != null ? Number(rideDetails.total_distance_km) : null,
+        rideDetails?.total_distance_km != null
+          ? Number(rideDetails.total_distance_km)
+          : null,
       total_duration_min: rideDetails?.total_duration_min ?? null,
       trip_started_at: rideDetails?.trip_started_at ?? null,
       trip_completed_at: rideDetails?.trip_completed_at ?? null,
@@ -177,7 +194,14 @@ export class AdminRidesService {
             user_id: rideStatus.booking.user_id,
             ambulance_type_id: rideStatus.booking.ambulance_type_id,
           }
-        : { id: '', status: '', pickup_address: null, drop_address: null, user_id: '', ambulance_type_id: '' },
+        : {
+            id: '',
+            status: '',
+            pickup_address: null,
+            drop_address: null,
+            user_id: '',
+            ambulance_type_id: '',
+          },
       ride_tracking: rideTracking.map((rt) => ({
         latitude: Number(rt.latitude),
         longitude: Number(rt.longitude),

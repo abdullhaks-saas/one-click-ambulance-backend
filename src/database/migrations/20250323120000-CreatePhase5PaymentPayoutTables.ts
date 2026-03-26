@@ -10,9 +10,7 @@ import {
  * Phase 5 — Payments & Finance: payment_transactions, driver_wallet,
  * wallet_transactions, payouts, payout_transactions.
  */
-export class CreatePhase5PaymentPayoutTables20250323120000
-  implements MigrationInterface
-{
+export class CreatePhase5PaymentPayoutTables20250323120000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const isMySQL =
       queryRunner.connection.options.type === 'mysql' ||

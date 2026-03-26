@@ -4,8 +4,10 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { SKIP_TRANSFORM_KEY } from '../decorators/skip-transform.decorator';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -14,16 +16,19 @@ export interface ApiResponse<T> {
 }
 
 @Injectable()
-export class ResponseTransformInterceptor<T> implements NestInterceptor<
-  T,
-  ApiResponse<T>
-> {
-  intercept(
-    _context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<ApiResponse<T>> {
+export class ResponseTransformInterceptor implements NestInterceptor {
+  constructor(private readonly reflector: Reflector) {}
+
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const skip = this.reflector.getAllAndOverride<boolean>(SKIP_TRANSFORM_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (skip) {
+      return next.handle();
+    }
     return next.handle().pipe(
-      map((data) => ({
+      map((data: unknown) => ({
         success: true,
         data,
         timestamp: new Date().toISOString(),

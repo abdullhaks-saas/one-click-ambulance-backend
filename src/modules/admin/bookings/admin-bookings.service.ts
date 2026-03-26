@@ -56,7 +56,12 @@ export interface BookingDetailResponse {
   cancellation_reason: string | null;
   created_at: Date;
   updated_at: Date;
-  user?: { id: string; name: string | null; mobile_number: string; email: string | null };
+  user?: {
+    id: string;
+    name: string | null;
+    mobile_number: string;
+    email: string | null;
+  };
   ambulance_type?: { id: string; name: string };
   zone?: { id: string; zone_name: string } | null;
   status_history?: { id: string; status: string; created_at: Date }[];
@@ -67,8 +72,18 @@ export interface BookingDetailResponse {
     trip_started_at: Date | null;
     trip_completed_at: Date | null;
   } | null;
-  payments?: { id: string; amount: number; status: string; razorpay_payment_id: string | null }[];
-  driver_assignments?: { id: string; driver_id: string; assigned_at: Date; accepted_at: Date | null }[];
+  payments?: {
+    id: string;
+    amount: number;
+    status: string;
+    razorpay_payment_id: string | null;
+  }[];
+  driver_assignments?: {
+    id: string;
+    driver_id: string;
+    assigned_at: Date;
+    accepted_at: Date | null;
+  }[];
 }
 
 @Injectable()
@@ -108,10 +123,9 @@ export class AdminBookingsService {
       qb.andWhere('DATE(b.created_at) <= :to', { to });
     }
     if (search) {
-      qb.andWhere(
-        '(u.mobile_number LIKE :search OR u.name LIKE :search)',
-        { search: `%${search}%` },
-      );
+      qb.andWhere('(u.mobile_number LIKE :search OR u.name LIKE :search)', {
+        search: `%${search}%`,
+      });
     }
 
     const [data, total] = await qb.getManyAndCount();
@@ -123,17 +137,24 @@ export class AdminBookingsService {
         ambulance_type_id: b.ambulance_type_id,
         zone_id: b.zone_id,
         status: b.status,
-        estimated_fare: b.estimated_fare != null ? Number(b.estimated_fare) : null,
+        estimated_fare:
+          b.estimated_fare != null ? Number(b.estimated_fare) : null,
         final_fare: b.final_fare != null ? Number(b.final_fare) : null,
         is_emergency: b.is_emergency,
         created_at: b.created_at,
         user: b.user
-          ? { id: b.user.id, name: b.user.name, mobile_number: b.user.mobile_number }
+          ? {
+              id: b.user.id,
+              name: b.user.name,
+              mobile_number: b.user.mobile_number,
+            }
           : undefined,
         ambulance_type: b.ambulance_type
           ? { id: b.ambulance_type.id, name: b.ambulance_type.name }
           : undefined,
-        zone: b.zone ? { id: b.zone.id, zone_name: b.zone.zone_name } : undefined,
+        zone: b.zone
+          ? { id: b.zone.id, zone_name: b.zone.zone_name }
+          : undefined,
       })),
       meta: {
         total,
@@ -147,7 +168,15 @@ export class AdminBookingsService {
   async getBookingById(id: string): Promise<BookingDetailResponse> {
     const booking = await this.bookingRepo.findOne({
       where: { id },
-      relations: ['user', 'ambulance_type', 'zone', 'status_history', 'ride_details', 'payments', 'driver_assignments'],
+      relations: [
+        'user',
+        'ambulance_type',
+        'zone',
+        'status_history',
+        'ride_details',
+        'payments',
+        'driver_assignments',
+      ],
     });
     if (!booking) {
       throw new NotFoundException('Booking not found');
@@ -165,26 +194,45 @@ export class AdminBookingsService {
       drop_longitude: Number(booking.drop_longitude),
       drop_address: booking.drop_address,
       status: booking.status,
-      estimated_fare: booking.estimated_fare != null ? Number(booking.estimated_fare) : null,
-      final_fare: booking.final_fare != null ? Number(booking.final_fare) : null,
-      estimated_distance_km: booking.estimated_distance_km != null ? Number(booking.estimated_distance_km) : null,
+      estimated_fare:
+        booking.estimated_fare != null ? Number(booking.estimated_fare) : null,
+      final_fare:
+        booking.final_fare != null ? Number(booking.final_fare) : null,
+      estimated_distance_km:
+        booking.estimated_distance_km != null
+          ? Number(booking.estimated_distance_km)
+          : null,
       estimated_duration_min: booking.estimated_duration_min,
       is_emergency: booking.is_emergency,
       cancellation_reason: booking.cancellation_reason,
       created_at: booking.created_at,
       updated_at: booking.updated_at,
       user: booking.user
-        ? { id: booking.user.id, name: booking.user.name, mobile_number: booking.user.mobile_number, email: booking.user.email }
+        ? {
+            id: booking.user.id,
+            name: booking.user.name,
+            mobile_number: booking.user.mobile_number,
+            email: booking.user.email,
+          }
         : undefined,
       ambulance_type: booking.ambulance_type
         ? { id: booking.ambulance_type.id, name: booking.ambulance_type.name }
         : undefined,
-      zone: booking.zone ? { id: booking.zone.id, zone_name: booking.zone.zone_name } : undefined,
-      status_history: booking.status_history?.map((h) => ({ id: h.id, status: h.status, created_at: h.created_at })),
+      zone: booking.zone
+        ? { id: booking.zone.id, zone_name: booking.zone.zone_name }
+        : undefined,
+      status_history: booking.status_history?.map((h) => ({
+        id: h.id,
+        status: h.status,
+        created_at: h.created_at,
+      })),
       ride_details: booking.ride_details
         ? {
             id: booking.ride_details.id,
-            total_distance_km: booking.ride_details.total_distance_km != null ? Number(booking.ride_details.total_distance_km) : null,
+            total_distance_km:
+              booking.ride_details.total_distance_km != null
+                ? Number(booking.ride_details.total_distance_km)
+                : null,
             total_duration_min: booking.ride_details.total_duration_min,
             trip_started_at: booking.ride_details.trip_started_at,
             trip_completed_at: booking.ride_details.trip_completed_at,
@@ -211,7 +259,9 @@ export class AdminBookingsService {
     reason?: string,
     ipAddress?: string,
   ): Promise<{ message: string }> {
-    const booking = await this.bookingRepo.findOne({ where: { id: bookingId } });
+    const booking = await this.bookingRepo.findOne({
+      where: { id: bookingId },
+    });
     if (!booking) {
       throw new NotFoundException('Booking not found');
     }

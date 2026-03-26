@@ -14,7 +14,7 @@ import {
 } from '../../../database/entities/driver-document.entity';
 import { DriverBankAccount } from '../../../database/entities/driver-bank-account.entity';
 import { AuditLog } from '../../../database/entities/audit-log.entity';
-import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { DriverListQueryDto } from './dto/driver-list-query.dto';
 import { FCM_NOTIFICATION_SERVICE } from '../../../shared/notifications/interfaces/fcm-notification.interface';
 import { FcmNoopService } from '../../../shared/notifications/fcm-noop.service';
 import { S3Service } from '../../../shared/s3/s3.service';
@@ -74,18 +74,34 @@ export class AdminDriversService {
     private readonly s3Service: S3Service,
   ) {}
 
-  async listDrivers(query: PaginationDto & { status?: DriverStatus }) {
-    const { page = 1, limit = 20, status } = query;
+  async listDrivers(query: DriverListQueryDto) {
+    const { page = 1, limit = 20, status, search, from, to } = query;
     const skip = (page - 1) * limit;
 
-    const where = status ? { status } : {};
+    const qb = this.driverRepo
+      .createQueryBuilder('d')
+      .orderBy('d.created_at', 'DESC')
+      .skip(skip)
+      .take(limit);
 
-    const [drivers, total] = await this.driverRepo.findAndCount({
-      where,
-      skip,
-      take: limit,
-      order: { created_at: 'DESC' },
-    });
+    if (status) {
+      qb.andWhere('d.status = :status', { status });
+    }
+    if (search?.trim()) {
+      const term = `%${search.trim()}%`;
+      qb.andWhere(
+        '(d.name LIKE :term OR d.mobile_number LIKE :term OR d.email LIKE :term)',
+        { term },
+      );
+    }
+    if (from) {
+      qb.andWhere('DATE(d.created_at) >= :from', { from });
+    }
+    if (to) {
+      qb.andWhere('DATE(d.created_at) <= :to', { to });
+    }
+
+    const [drivers, total] = await qb.getManyAndCount();
 
     const data = await Promise.all(
       drivers.map(async (driver) => {
@@ -113,7 +129,8 @@ export class AdminDriversService {
       throw new NotFoundException('Driver not found');
     }
 
-    const [documents, bankAccounts] = await this.fetchDriverDocumentsAndBankAccounts(id);
+    const [documents, bankAccounts] =
+      await this.fetchDriverDocumentsAndBankAccounts(id);
 
     const [profile_photo, documentsWithUrls] = await Promise.all([
       driver.profile_photo
@@ -123,7 +140,9 @@ export class AdminDriversService {
         documents.map(async (d) => ({
           id: d.id,
           document_type: d.document_type,
-          document_url: (await this.s3Service.getSignedUrl(d.document_url)) ?? d.document_url,
+          document_url:
+            (await this.s3Service.getSignedUrl(d.document_url)) ??
+            d.document_url,
           verification_status: d.verification_status,
           created_at: d.created_at,
         })),

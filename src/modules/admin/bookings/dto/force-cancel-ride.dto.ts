@@ -6,7 +6,10 @@ export class ForceCancelRideDto {
   @IsUUID()
   booking_id: string;
 
-  @ApiPropertyOptional({ description: 'Reason for force cancellation', maxLength: 500 })
+  @ApiPropertyOptional({
+    description: 'Reason for force cancellation',
+    maxLength: 500,
+  })
   @IsOptional()
   @IsString()
   @MaxLength(500)

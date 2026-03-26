@@ -19,7 +19,9 @@ export class AmbulanceListQueryDto extends PaginationDto {
   @IsUUID()
   driver_id?: string;
 
-  @ApiPropertyOptional({ description: 'Search by registration or vehicle number' })
+  @ApiPropertyOptional({
+    description: 'Search by registration or vehicle number',
+  })
   @IsOptional()
   @IsString()
   @Type(() => String)

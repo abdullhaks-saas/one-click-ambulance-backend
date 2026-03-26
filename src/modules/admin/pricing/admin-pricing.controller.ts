@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -36,7 +29,10 @@ export class AdminPricingController {
 
   @Get()
   @ApiOperation({ summary: 'Get all pricing rules per ambulance type' })
-  @ApiResponse({ status: 200, description: 'Pricing rules for all ambulance types' })
+  @ApiResponse({
+    status: 200,
+    description: 'Pricing rules for all ambulance types',
+  })
   getAllPricing() {
     return this.adminPricingService.getAllPricingRules();
   }
@@ -46,7 +42,9 @@ export class AdminPricingController {
   @ApiParam({ name: 'ambulance_type_id', description: 'Ambulance type UUID' })
   @ApiResponse({ status: 200, description: 'Pricing rule for ambulance type' })
   @ApiResponse({ status: 404, description: 'Ambulance type not found' })
-  getPricingByAmbulanceType(@Param('ambulance_type_id') ambulanceTypeId: string) {
+  getPricingByAmbulanceType(
+    @Param('ambulance_type_id') ambulanceTypeId: string,
+  ) {
     return this.adminPricingService.getPricingByAmbulanceType(ambulanceTypeId);
   }
 

@@ -14,9 +14,7 @@ import {
  *         bookings, booking_status_history, booking_driver_assignments,
  *         ride_details, ride_status, ride_tracking, payments
  */
-export class CreatePhase3BookingRideTables20250316120000
-  implements MigrationInterface
-{
+export class CreatePhase3BookingRideTables20250316120000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const isMySQL =
       queryRunner.connection.options.type === 'mysql' ||

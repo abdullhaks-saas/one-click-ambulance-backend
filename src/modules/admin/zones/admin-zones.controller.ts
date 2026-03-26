@@ -45,7 +45,10 @@ export class AdminZonesController {
   @ApiOperation({ summary: 'Create new service zone with coordinates' })
   @ApiResponse({ status: 201, description: 'Zone created successfully' })
   @ApiResponse({ status: 400, description: 'Validation error' })
-  createZone(@Body() dto: CreateZoneDto, @CurrentUser() user: AdminRequestUser) {
+  createZone(
+    @Body() dto: CreateZoneDto,
+    @CurrentUser() user: AdminRequestUser,
+  ) {
     return this.adminZonesService.createZone(dto, user.sub);
   }
 

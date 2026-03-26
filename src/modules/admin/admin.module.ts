@@ -13,6 +13,10 @@ import { AdminZonesModule } from './zones/admin-zones.module';
 import { AdminPaymentsModule } from './payments/admin-payments.module';
 import { AdminPayoutsModule } from './payouts/admin-payouts.module';
 import { AdminAnalyticsModule } from './analytics/admin-analytics.module';
+import { AdminNotificationsModule } from './notifications/admin-notifications.module';
+import { AdminFraudModule } from './fraud/admin-fraud.module';
+import { AdminReportsModule } from './reports/admin-reports.module';
+import { AdminSystemModule } from './system/admin-system.module';
 
 @Module({
   imports: [
@@ -39,6 +43,10 @@ import { AdminAnalyticsModule } from './analytics/admin-analytics.module';
     AdminPaymentsModule,
     AdminPayoutsModule,
     AdminAnalyticsModule,
+    AdminNotificationsModule,
+    AdminFraudModule,
+    AdminReportsModule,
+    AdminSystemModule,
   ],
 })
 export class AdminModule {}

@@ -17,7 +17,9 @@ export class BookingDriverAssignment {
   @Column()
   booking_id: string;
 
-  @ManyToOne(() => Booking, (b) => b.driver_assignments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Booking, (b) => b.driver_assignments, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'booking_id' })
   booking: Booking;
 

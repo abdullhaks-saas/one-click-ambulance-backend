@@ -59,6 +59,12 @@ export class Driver {
   @Column({ nullable: true })
   device_id: string;
 
+  @Column({ type: 'timestamp', nullable: true })
+  fraud_flagged_at: Date | null;
+
+  @Column({ type: 'text', nullable: true })
+  fraud_flag_reason: string | null;
+
   @CreateDateColumn()
   created_at: Date;
 

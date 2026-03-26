@@ -68,10 +68,7 @@ export class AdminDriverActionsController {
   @ApiOperation({ summary: 'Permanently block driver' })
   @ApiResponse({ status: 200, description: 'Driver blocked' })
   @ApiResponse({ status: 404, description: 'Driver not found' })
-  blockDriver(
-    @Body() dto: DriverIdDto,
-    @CurrentUser() user: AdminRequestUser,
-  ) {
+  blockDriver(@Body() dto: DriverIdDto, @CurrentUser() user: AdminRequestUser) {
     return this.adminDriversService.blockDriver(dto.driver_id, user.sub);
   }
 
