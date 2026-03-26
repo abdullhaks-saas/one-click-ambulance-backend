@@ -18,6 +18,7 @@ export interface PricingRuleResponse {
   emergency_charge: number;
   night_charge: number;
   minimum_fare: number;
+  toll_charge: number;
   created_at: Date;
   updated_at: Date;
 }
@@ -57,6 +58,7 @@ export class AdminPricingService {
         emergency_charge: Number(rule?.emergency_charge ?? 0),
         night_charge: Number(rule?.night_charge ?? 0),
         minimum_fare: Number(rule?.minimum_fare ?? 0),
+        toll_charge: Number(rule?.toll_charge ?? 0),
         created_at: rule?.created_at ?? at.created_at,
         updated_at: rule?.updated_at ?? at.created_at,
       });
@@ -89,6 +91,7 @@ export class AdminPricingService {
       emergency_charge: Number(rule?.emergency_charge ?? 0),
       night_charge: Number(rule?.night_charge ?? 0),
       minimum_fare: Number(rule?.minimum_fare ?? 0),
+      toll_charge: Number(rule?.toll_charge ?? 0),
       created_at: rule?.created_at ?? ambulanceType.created_at,
       updated_at: rule?.updated_at ?? ambulanceType.created_at,
     };
@@ -102,6 +105,7 @@ export class AdminPricingService {
       emergency_charge?: number;
       night_charge?: number;
       minimum_fare?: number;
+      toll_charge?: number;
     },
     adminId: string,
   ): Promise<PricingRuleResponse> {
@@ -118,6 +122,7 @@ export class AdminPricingService {
       emergency_charge: dto.emergency_charge,
       night_charge: dto.night_charge,
       minimum_fare: dto.minimum_fare,
+      toll_charge: dto.toll_charge,
     };
     const nonUndefined = Object.fromEntries(
       Object.entries(updates).filter(([, v]) => v !== undefined),
@@ -168,6 +173,7 @@ export class AdminPricingService {
       emergency_charge: Number(rule.emergency_charge),
       night_charge: Number(rule.night_charge),
       minimum_fare: Number(rule.minimum_fare),
+      toll_charge: Number(rule.toll_charge),
       created_at: rule.created_at,
       updated_at: rule.updated_at,
     };

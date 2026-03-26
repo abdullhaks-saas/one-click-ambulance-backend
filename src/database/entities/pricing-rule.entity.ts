@@ -36,6 +36,9 @@ export class PricingRule {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   minimum_fare: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+  toll_charge: number;
+
   @CreateDateColumn()
   created_at: Date;
 

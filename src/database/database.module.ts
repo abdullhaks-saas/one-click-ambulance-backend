@@ -34,6 +34,9 @@ import { ErrorLog } from './entities/error-log.entity';
 import { SupportTicket } from './entities/support-ticket.entity';
 import { TicketMessage } from './entities/ticket-message.entity';
 import { AppVersion } from './entities/app-version.entity';
+import { TollCharge } from './entities/toll-charge.entity';
+import { RideRating } from './entities/ride-rating.entity';
+import { AdminAlert } from './entities/admin-alert.entity';
 
 @Module({
   imports: [
@@ -72,6 +75,9 @@ import { AppVersion } from './entities/app-version.entity';
       SupportTicket,
       TicketMessage,
       AppVersion,
+      TollCharge,
+      RideRating,
+      AdminAlert,
     ]),
   ],
   exports: [TypeOrmModule],

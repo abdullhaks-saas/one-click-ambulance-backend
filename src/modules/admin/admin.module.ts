@@ -17,6 +17,8 @@ import { AdminNotificationsModule } from './notifications/admin-notifications.mo
 import { AdminFraudModule } from './fraud/admin-fraud.module';
 import { AdminReportsModule } from './reports/admin-reports.module';
 import { AdminSystemModule } from './system/admin-system.module';
+import { AdminRatingsModule } from './ratings/admin-ratings.module';
+import { AdminAlertsModule } from './alerts/admin-alerts.module';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { AdminSystemModule } from './system/admin-system.module';
     AdminFraudModule,
     AdminReportsModule,
     AdminSystemModule,
+    AdminRatingsModule,
+    AdminAlertsModule,
   ],
 })
 export class AdminModule {}

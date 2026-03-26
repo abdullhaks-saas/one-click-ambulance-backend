@@ -64,6 +64,7 @@ export class AdminPricingController {
         emergency_charge: dto.emergency_charge,
         night_charge: dto.night_charge,
         minimum_fare: dto.minimum_fare,
+        toll_charge: dto.toll_charge,
       },
       user.sub,
     );

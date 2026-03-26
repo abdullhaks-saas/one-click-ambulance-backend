@@ -42,4 +42,11 @@ export class UpdatePricingDto {
   @Min(0)
   @Type(() => Number)
   minimum_fare?: number;
+
+  @ApiPropertyOptional({ description: 'Toll charge (₹)' })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Type(() => Number)
+  toll_charge?: number;
 }
