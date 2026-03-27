@@ -6,6 +6,19 @@ export const getDatabaseConfig = (
 ): TypeOrmModuleOptions => {
   const dbType = configService.get('DATABASE_TYPE') || 'mysql';
   const isMySQL = dbType === 'mysql';
+  const databaseUrl = configService.get<string>('DATABASE_URL');
+
+  if (databaseUrl) {
+    return {
+      type: 'mysql',
+      url: databaseUrl,
+      autoLoadEntities: true,
+      synchronize: false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    };
+  }
 
   return {
     type: isMySQL ? 'mysql' : 'postgres',
