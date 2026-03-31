@@ -35,6 +35,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         if (!user || user.is_blocked) {
           throw new UnauthorizedException('Account is blocked or not found');
         }
+        if (user.fraud_flagged_at) {
+          throw new UnauthorizedException('Account is restricted');
+        }
         return { ...payload, entity: user };
       }
       case Role.DRIVER: {

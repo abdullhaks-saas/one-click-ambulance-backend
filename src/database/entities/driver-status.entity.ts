@@ -27,8 +27,9 @@ export class DriverStatusEntity {
   @Column({ type: 'timestamp', nullable: true })
   last_seen: Date;
 
-  @Column({ nullable: true })
-  current_booking_id: string;
+  /** Explicit DB type so MySQL does not infer union `string | null` as Object. */
+  @Column({ type: 'varchar', length: 36, nullable: true })
+  current_booking_id: string | null;
 
   @CreateDateColumn()
   created_at: Date;

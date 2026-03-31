@@ -73,8 +73,36 @@ Include \`Authorization: Bearer <access_token>\` on all protected routes.
       'Customer app: OTP-based authentication (send-otp, verify-otp, refresh, logout)',
     )
     .addTag(
+      'User — Profile',
+      'Customer profile, register after OTP, device tokens',
+    )
+    .addTag('User — Addresses', 'Saved pickup/drop addresses')
+    .addTag(
+      'User — Ambulance',
+      'Ambulance types, nearby (dispatch radius), vehicle details',
+    )
+    .addTag(
+      'User — Booking',
+      'Fare estimate and (later) booking lifecycle for customers',
+    )
+    .addTag('User — Ride', 'Ride details, status, OTP, live location')
+    .addTag('User — Payment', 'Razorpay order, verify, payment history')
+    .addTag('User — Rating', 'Submit driver rating after trip')
+    .addTag('User — Notifications', 'In-app / FCM delivery inbox')
+    .addTag('User — Chat', 'Booking chat and call logging')
+    .addTag('User — Invoice', 'PDF invoice download')
+    .addTag('User — Support', 'Customer support tickets')
+    .addTag(
+      'User — System (public)',
+      'Public app config: settings + version check (no auth)',
+    )
+    .addTag(
       'Driver — Auth',
       'Driver app: OTP-based authentication (send-otp, verify-otp, refresh, logout)',
+    )
+    .addTag(
+      'Driver — Rides',
+      'Driver accept/reject customer ride offers (customer auto-dispatch uses `/driver/*`, not `/dispatch/*`)',
     )
     .addTag('Admin — Auth', 'Admin portal: Email + password authentication')
     // Admin modules

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { UserAddress } from './entities/user-address.entity';
 import { Driver } from './entities/driver.entity';
 import { AdminUser } from './entities/admin-user.entity';
 import { AuditLog } from './entities/audit-log.entity';
@@ -35,13 +36,17 @@ import { SupportTicket } from './entities/support-ticket.entity';
 import { TicketMessage } from './entities/ticket-message.entity';
 import { AppVersion } from './entities/app-version.entity';
 import { TollCharge } from './entities/toll-charge.entity';
+import { RideOtp } from './entities/ride-otp.entity';
 import { RideRating } from './entities/ride-rating.entity';
 import { AdminAlert } from './entities/admin-alert.entity';
+import { Chat } from './entities/chat.entity';
+import { CallLog } from './entities/call-log.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       User,
+      UserAddress,
       Driver,
       AdminUser,
       AuditLog,
@@ -76,8 +81,11 @@ import { AdminAlert } from './entities/admin-alert.entity';
       TicketMessage,
       AppVersion,
       TollCharge,
+      RideOtp,
       RideRating,
       AdminAlert,
+      Chat,
+      CallLog,
     ]),
   ],
   exports: [TypeOrmModule],

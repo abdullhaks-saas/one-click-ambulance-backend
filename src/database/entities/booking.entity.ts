@@ -17,6 +17,7 @@ import { BookingDriverAssignment } from './booking-driver-assignment.entity';
 import { RideDetails } from './ride-details.entity';
 import { RideStatus } from './ride-status.entity';
 import { RideTracking } from './ride-tracking.entity';
+import { RideOtp } from './ride-otp.entity';
 import { Payment } from './payment.entity';
 
 export enum BookingStatus {
@@ -119,6 +120,9 @@ export class Booking {
 
   @OneToMany(() => RideTracking, (rt) => rt.booking)
   ride_tracking: RideTracking[];
+
+  @OneToMany(() => RideOtp, (ro) => ro.booking)
+  ride_otp: RideOtp[];
 
   @OneToMany(() => Payment, (p) => p.booking)
   payments: Payment[];

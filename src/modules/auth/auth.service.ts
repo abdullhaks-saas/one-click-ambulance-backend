@@ -83,6 +83,22 @@ export class AuthService {
     return this.generateTokens(userId, role);
   }
 
+  /** Verify refresh JWT, ensure role, then rotate access + refresh (Redis must match). */
+  async refreshWithRefreshJwt(refreshToken: string, expectedRole: Role) {
+    let payload: JwtPayload;
+    try {
+      payload = this.jwtService.verify<JwtPayload>(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+    if (payload.role !== expectedRole) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+    return this.refreshTokens(payload.sub, expectedRole, refreshToken);
+  }
+
   async logout(userId: string, role: Role): Promise<void> {
     await this.redisService.del(`refresh:${userId}:${role}`);
   }

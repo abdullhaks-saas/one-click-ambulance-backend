@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ErrorLog } from './database/entities/error-log.entity';
 import { APP_GUARD, APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { validationSchema } from './config/validation.schema';
@@ -30,6 +31,7 @@ import { S3Module } from './shared/s3/s3.module';
       inject: [ConfigService],
       imports: [ConfigModule],
     }),
+    TypeOrmModule.forFeature([ErrorLog]),
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
@@ -51,7 +53,8 @@ import { S3Module } from './shared/s3/s3.module';
     { provide: APP_GUARD, useClass: RolesGuard },
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_INTERCEPTOR, useClass: ResponseTransformInterceptor },
-    { provide: APP_FILTER, useClass: GlobalExceptionFilter },
+    GlobalExceptionFilter,
+    { provide: APP_FILTER, useExisting: GlobalExceptionFilter },
   ],
 })
 export class AppModule {}

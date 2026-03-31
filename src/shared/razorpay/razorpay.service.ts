@@ -18,6 +18,14 @@ export interface RazorpayPaymentFetchResponse {
   error_description?: string;
 }
 
+/** POST /v1/orders response (subset). */
+export interface RazorpayOrderCreateResponse {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+}
+
 @Injectable()
 export class RazorpayService {
   private readonly logger = new Logger(RazorpayService.name);
@@ -42,6 +50,31 @@ export class RazorpayService {
     }
     const token = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
     return `Basic ${token}`;
+  }
+
+  /**
+   * Create a Razorpay order (amount in smallest currency unit — paise for INR).
+   */
+  async createOrder(
+    amountPaise: number,
+    receipt: string,
+    notes?: Record<string, string>,
+  ): Promise<RazorpayOrderCreateResponse> {
+    const url = `${this.baseUrl}/orders`;
+    const safeReceipt = receipt.replace(/[^a-zA-Z0-9]/g, '').slice(0, 40);
+    const { data } = await this.httpService.post<RazorpayOrderCreateResponse>(
+      url,
+      {
+        amount: Math.round(amountPaise),
+        currency: 'INR',
+        receipt: safeReceipt || 'rcp',
+        notes: notes ?? {},
+      },
+      {
+        headers: { Authorization: this.getAuthHeader() },
+      },
+    );
+    return data;
   }
 
   async fetchPayment(

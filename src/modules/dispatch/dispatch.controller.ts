@@ -31,7 +31,7 @@ export interface AdminJwtPayload {
   role: string;
 }
 
-@ApiTags('Dispatch')
+@ApiTags('Dispatch — Admin')
 @Controller('dispatch')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(Role.ADMIN)

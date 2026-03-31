@@ -24,6 +24,9 @@ export const validationSchema = Joi.object({
   MSG91_SENDER_ID: Joi.string().optional(),
   MSG91_TEMPLATE_ID: Joi.string().optional(),
   OTP_EXPIRY_MINUTES: Joi.number().default(5),
+  /** Nearest-driver search radius in km (project plan §7). */
+  DISPATCH_RADIUS_KM: Joi.number().default(10),
+  DISPATCH_TIMEOUT_SECONDS: Joi.number().default(15),
   OTP_LENGTH: Joi.number().default(6),
   ALLOWED_ORIGINS: Joi.string().optional(),
   THROTTLE_TTL: Joi.number().default(60),

@@ -54,4 +54,8 @@ export class NotificationLog {
 
   @CreateDateColumn()
   created_at: Date;
+
+  /** Customer read receipt (Phase K). */
+  @Column({ type: 'timestamp', nullable: true })
+  read_at: Date | null;
 }

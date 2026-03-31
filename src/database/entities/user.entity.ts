@@ -21,6 +21,8 @@ export class User {
   @Column({ nullable: true })
   email: string;
 
+  /** OTP lives in Redis (see AuthService); not stored on this row. */
+
   @Column({ nullable: true })
   profile_photo_url: string;
 

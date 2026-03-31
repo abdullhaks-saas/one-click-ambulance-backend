@@ -11,6 +11,8 @@ import { Payment } from './payment.entity';
 export enum PaymentTransactionKind {
   RECONCILE = 'reconcile',
   RETRY_STATUS = 'retry_status',
+  /** Customer app signature verification (Phase I). */
+  VERIFY = 'verify',
 }
 
 @Entity('payment_transactions')
